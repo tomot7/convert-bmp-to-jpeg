@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <h2>画像変換</h2>
+
+    <p>BMP形式の画像を選択してください（選択するとjpegファイルがダウンロードされます。選択した画像はなくなりません。）:</p>
+
+    <input type="file" id="inputImage">
+
+    <script>
+        // 画像ファイルの読み込み処理
+        let inputImage = document.querySelector('#inputImage');
+        let reader = new FileReader();
+
+        reader.onload = function (event) {
+            let img = new Image();
+            img.onload = function () {
+                convertToJPEG(img);
+            }
+            img.src = event.target.result;
+        }
+
+        // 画像ファイルが選択された時の処理
+        inputImage.addEventListener('change', function (event) {
+            reader.readAsDataURL(event.target.files[0]);
+        });
+
+        // 画像をJPEG形式に変換する関数
+        function convertToJPEG(img) {
+            let canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            let ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+
+            let jpegImage = canvas.toDataURL('image/jpeg');
+            downloadImage(jpegImage, 'output.jpeg');
+        }
+
+        // 画像をダウンロードする関数
+        function downloadImage(data, filename) {
+            let link = document.createElement('a');
+            link.download = filename;
+            link.href = data;
+            link.click();
+        }
+    </script>
+
+</body>
+
+</html>
